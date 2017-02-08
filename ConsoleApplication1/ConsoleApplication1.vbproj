@@ -86,6 +86,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="primes.vb" />
+    <Compile Include="SieveOfAtkin.vb" />
     <Compile Include="SphereFormula.vb" />
   </ItemGroup>
   <ItemGroup>

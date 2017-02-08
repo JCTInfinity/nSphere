@@ -10,8 +10,10 @@ Module Module1
             Exit Sub
         End If
         Dim track As New Stopwatch
+        pCache = SieveOfAtkin.Generate(1000000, track)
+        Console.WriteLine(pCache.Count & " primes generated in " & track.Elapsed.ToString("g") & " ending with " & pCache.Last.ToString)
         Dim s As SphereFormula = Nothing
-        Console.WriteLine("Time" & vbTab & vbTab & vbTab & "Dim" & vbTab & "Prime" & vbTab & "Formula")
+        Console.WriteLine("Time" & vbTab & vbTab & vbTab & "Dim" & vbTab & "Formula")
         For i = 0 To dimensions
             Try
                 track.Start()
@@ -22,7 +24,7 @@ Module Module1
                 Console.WriteLine("Unable to calculate beyond " & s.Dimensions & " dimensions due to " & ex.Message)
                 Exit For
             End Try
-            Console.WriteLine(track.Elapsed.ToString("g") & vbTab & vbTab & i & vbTab & pCache.Last.ToString & vbTab & s.ToString)
+            Console.WriteLine(track.Elapsed.ToString("g") & vbTab & vbTab & i & vbTab & s.ToString)
         Next
         Console.WriteLine("A unit (r=1) " & s.Dimensions & "-sphere has a " & s.Dimensions & "-volume of " & s.nVolume(1))
         Console.WriteLine("If you would like to calculate the " & s.Dimensions & "-volume for a different value of r, enter a floating-point value to use.")
@@ -30,7 +32,7 @@ Module Module1
         If String.IsNullOrWhiteSpace(input) Then Exit Sub
         Dim r As Double
         If Double.TryParse(input, r) Then
-            Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volue = " & s.nVolume(r))
+            Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volume = " & s.nVolume(r))
         Else
             Console.WriteLine("Unable to parse that value. Will now exit.")
         End If

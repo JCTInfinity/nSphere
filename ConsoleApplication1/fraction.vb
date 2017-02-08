@@ -44,8 +44,7 @@
                                 If If(NumIsMin, n, d) = 1 Then Exit Do
                             Else
                                 k += 1
-                                If k = pCache.Count Then FindNextPrime(If(NumIsMin, n, d) / 2)
-                                If k = pCache.Count Then Exit Do
+                                If k = pCache.Count OrElse pCache(k) > If(NumIsMin, n, d) / 2 Then Exit Do
                             End If
                         Loop
                     End If
