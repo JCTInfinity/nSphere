@@ -2,6 +2,7 @@
     Private _num As BigInteger
     Private _den As BigInteger
     Private _simplestForm As fraction = Nothing
+    Public Shared maxPrime As UInteger = 0
     Public ReadOnly Property Numerator As BigInteger
         Get
             Return _num
@@ -41,6 +42,7 @@
                             If n Mod pCache(k) = 0 AndAlso d Mod pCache(k) = 0 Then
                                 n /= pCache(k)
                                 d /= pCache(k)
+                                If pCache(k) > maxPrime Then maxPrime = pCache(k)
                                 If If(NumIsMin, n, d) = 1 Then Exit Do
                             Else
                                 k += 1

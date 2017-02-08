@@ -4,7 +4,6 @@
     Private Shared s As UInteger() = {1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59}
     Private Sub New(ByVal limit As BigInteger)
         _limit = limit
-        Console.WriteLine("Initializing primes")
         For i As UInteger = 0 To _limit Step 60
             For k As Byte = 0 To 15
                 is_prime.Add(i + s(k), False)
@@ -12,7 +11,6 @@
         Next
     End Sub
     Private Sub Step3_1()
-        Console.WriteLine("Step 3.1")
         Dim x As UInteger = 1, xn As UInteger = 4, y As UInteger, yn As UInteger, n As UInteger
         Dim solutions As New List(Of UInteger)
         While xn < _limit
@@ -32,7 +30,6 @@
         Next
     End Sub
     Private Sub Step3_2()
-        Console.WriteLine("Step 3.2")
         Dim x As UInteger = 1, xn As UInteger = 3, y As UInteger, yn As UInteger, n As UInteger
         Dim solutions As New List(Of UInteger)
         While xn < _limit
@@ -52,7 +49,6 @@
         Next
     End Sub
     Private Sub Step3_3()
-        Console.WriteLine("Step 3.3")
         Dim x As UInteger = 2, xn As UInteger = 4, y As UInteger, yn As UInteger, n As UInteger
         Dim solutions As New List(Of UInteger)
         While xn < _limit
@@ -72,7 +68,6 @@
         Next
     End Sub
     Private Sub sieve()
-        Console.WriteLine("Sieving")
         Dim w As UInteger = 0, n As UInteger = 7, nSqr As BigInteger = 0, c As BigInteger = 0, k As UInteger = 0
         While nSqr < _limit
             For x As Byte = 0 To 15
