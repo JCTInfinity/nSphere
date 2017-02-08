@@ -36,11 +36,12 @@
                             d = 1
                         End If
                     Else
-                        Dim k As Integer = 1
+                        Dim k As Integer = 0
                         Do
                             If n Mod pCache(k) = 0 AndAlso d Mod pCache(k) = 0 Then
                                 n /= pCache(k)
                                 d /= pCache(k)
+                                If If(NumIsMin, n, d) = 1 Then Exit Do
                             Else
                                 k += 1
                                 If k = pCache.Count Then FindNextPrime(If(NumIsMin, n, d) / 2)
@@ -66,8 +67,7 @@
         Return If(_den = 1, "", "(") & _num.ToString("n0") & If(_den = 1, "", "/" & _den.ToString("n0") & ")")
     End Function
     Public Overloads Shared Operator *(ByVal left As fraction, ByVal right As fraction)
-        Dim c1 As New fraction(left.SimplestForm.Numerator, right.SimplestForm.Denominator), c2 As New fraction(right.SimplestForm.Numerator, left.SimplestForm.Denominator)
-        Return (New fraction(c1.SimplestForm.Numerator * c2.SimplestForm.Numerator, c1.SimplestForm.Denominator * c2.SimplestForm.Denominator)).SimplestForm
+        Return (New fraction(left.Numerator * right.Numerator, left.Denominator * right.Denominator)).SimplestForm
     End Operator
     Public Overloads Shared Operator =(ByVal left As fraction, ByVal right As fraction) As Boolean
         Return left.SimplestForm.Numerator = right.SimplestForm.Numerator AndAlso left.SimplestForm.Denominator = right.SimplestForm.Denominator
