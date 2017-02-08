@@ -4,7 +4,7 @@
     Private Shared s As UInteger() = {1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59}
     Private Sub New(ByVal limit As BigInteger)
         _limit = limit
-        Console.WriteLine("Initializing")
+        Console.WriteLine("Initializing primes")
         For i As UInteger = 0 To _limit Step 60
             For k As Byte = 0 To 15
                 is_prime.Add(i + s(k), False)
