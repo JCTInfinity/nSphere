@@ -33,13 +33,13 @@ Module Module1
             'fraction.maxPrime = 0
         Next
         Console.WriteLine(track.Elapsed.ToString("g") & vbTab & vbTab & dimensions & vbTab & fraction.maxPrime & vbTab & s.ToString)
-        Console.WriteLine("A unit (r=1) " & s.Dimensions & "-sphere has a " & s.Dimensions & "-volume of " & s.nVolume(1))
+        Console.WriteLine("A unit (r=1) " & s.Dimensions & "-sphere has a " & s.Dimensions & "-volume of " & s.nVolume(1) & " (e^" & s.nVolumeExp(1) & ")")
         Console.WriteLine("If you would like to calculate the " & s.Dimensions & "-volume for a different value of r, enter a floating-point value to use.")
         input = Console.ReadLine
         If String.IsNullOrWhiteSpace(input) Then Exit Sub
         Dim r As Double
         If Double.TryParse(input, r) Then
-            Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volume = " & s.nVolume(r))
+            Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volume = " & s.nVolume(r) & " (e^" & s.nVolumeExp(r) & ")")
         Else
             Console.WriteLine("Unable to parse that value. Will now exit.")
         End If

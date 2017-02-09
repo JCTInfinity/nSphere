@@ -34,7 +34,10 @@
         Return sCache
     End Function
     Public Function nVolume(ByVal r As Double) As Double
-        Return Frac.Value * Math.PI ^ Pis * r ^ Rs
+        Return Math.Exp(nVolumeExp(r))
+    End Function
+    Public Function nVolumeExp(ByVal r As Double) As Double
+        Return Frac.ExpValue + Math.Log(Math.PI) * Pis + Math.Log(r) * Rs
     End Function
     Private Shared fCache As New Dictionary(Of Integer, fraction)
     Private Sub f(ByVal n As Integer)

@@ -13,9 +13,9 @@
             Return _den
         End Get
     End Property
-    Public ReadOnly Property Value As Double
+    Public ReadOnly Property ExpValue As Double
         Get
-            Return CDbl(_num) / CDbl(_den)
+            Return BigInteger.Log(_num) - BigInteger.Log(_den)
         End Get
     End Property
     ' If this weren't using only positive numbers, I'd include a sign boolean
@@ -65,6 +65,7 @@
         _den = d
     End Sub
     Public Overrides Function ToString() As String
+        If _den > UInteger.MaxValue Then Return "e^" & BigInteger.Log(_num) - BigInteger.Log(_den)
         Return If(_den = 1, "", "(") & _num.ToString("n0") & If(_den = 1, "", "/" & _den.ToString("n0") & ")")
     End Function
     Public Overloads Shared Operator *(ByVal left As fraction, ByVal right As fraction)
