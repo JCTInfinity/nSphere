@@ -1,21 +1,27 @@
 ﻿Imports System.IO
 Module Module1
     Sub Main()
-        Dim input As String, dimensions As Integer
-        Console.WriteLine("Enter a number of dimensions (integer > 0)")
+        While doThings() : End While
+    End Sub
+function doThings() as boolean
+        Dim input As String, dimensions As UInteger
+        Console.WriteLine("Enter a number of dimensions (integer >= 0)")
         input = Console.ReadLine
         If Not Integer.TryParse(input, dimensions) OrElse dimensions < 1 Then
-            Console.WriteLine("Invalid input. Enter an integer greater than 0.")
-            Main()
-            Exit Sub
+            Console.WriteLine("Invalid input. Enter a positive integer or 0.")
+            Return True
         End If
         Dim track As New Stopwatch
-        pCache = SieveOfAtkin.Generate(dimensions * 2, track)
-        Console.WriteLine(pCache.Count & " primes generated in " & track.Elapsed.ToString("g") & " ending with " & pCache.Last.ToString)
+        If pCache Is Nothing OrElse pCache.Count < dimensions * 2 Then
+            pCache = SieveOfAtkin.Generate(dimensions * 2, track)
+            Console.WriteLine(pCache.Count & " primes generated in " & track.Elapsed.ToString("g") & " ending with " & pCache.Last.ToString)
+        End If
         Dim s As SphereFormula = Nothing
         Console.WriteLine("Time" & vbTab & vbTab & vbTab & "Dim" & vbTab & "Prime" & vbTab & "Formula")
         Dim lastUpdate As New TimeSpan(0)
-        For i = 1 To dimensions
+        Dim startDim As UInteger = If(SphereFormula.sCache IsNot Nothing, SphereFormula.sCache.Dimensions, 1)
+        If startDim > dimensions Then startDim = 1
+        For i = startDim To dimensions
             Try
                 track.Start()
                 s = SphereFormula.ForDimension(i)
@@ -34,15 +40,25 @@ Module Module1
         Next
         Console.WriteLine(track.Elapsed.ToString("g") & vbTab & vbTab & dimensions & vbTab & fraction.maxPrime & vbTab & s.ToString)
         Console.WriteLine("A unit (r=1) " & s.Dimensions & "-sphere has a " & s.Dimensions & "-volume of " & s.nVolume(1) & " (e^" & s.nVolumeExp(1) & ")")
+        Console.WriteLine()
         Console.WriteLine("If you would like to calculate the " & s.Dimensions & "-volume for a different value of r, enter a floating-point value to use.")
-        input = Console.ReadLine
-        If String.IsNullOrWhiteSpace(input) Then Exit Sub
-        Dim r As Double
-        If Double.TryParse(input, r) Then
-            Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volume = " & s.nVolume(r) & " (e^" & s.nVolumeExp(r) & ")")
-        Else
-            Console.WriteLine("Unable to parse that value. Will now exit.")
-        End If
-        Console.ReadKey()
-    End Sub
+        Console.WriteLine("To exit, type Exit. To start over, type New")
+        Do
+            input = Console.ReadLine
+            Dim r As Double
+            If Double.TryParse(input, r) Then
+                Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volume = " & s.nVolume(r) & " (e^" & s.nVolumeExp(r) & ")")
+                Console.WriteLine("Calculate with a nother value, Exit, or New?")
+            Else
+                Select Case input.ToLower.Trim
+                    Case ""
+                    Case "exit"
+                        Return False
+                    Case "new"
+                        Return True
+                End Select
+                Console.WriteLine("Unable to parse that value. Will now exit.")
+            End If
+        Loop
+    End Function
 End Module

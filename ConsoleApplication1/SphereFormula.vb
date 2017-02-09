@@ -1,5 +1,5 @@
 ﻿Public Class SphereFormula
-    Private Shared sCache As New SphereFormula(0)
+    Public Shared sCache As SphereFormula
     Public Property Dimensions As UInt16
     Public Property Pis As UInt16 = 0
     Public Property Rs As UInt16
@@ -26,6 +26,7 @@
         End If
     End Sub
     Public Shared Function ForDimension(ByVal dimensions As UInt16) As SphereFormula
+        If sCache Is Nothing OrElse sCache.Dimensions > dimensions Then sCache = New SphereFormula(0)
         If sCache.Dimensions < dimensions Then
             For i As UInt16 = sCache.Dimensions + 1 To dimensions
                 sCache = New SphereFormula(i)
