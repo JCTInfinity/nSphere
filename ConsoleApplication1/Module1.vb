@@ -14,11 +14,16 @@ Module Module1
         Console.WriteLine(pCache.Count & " primes generated in " & track.Elapsed.ToString("g") & " ending with " & pCache.Last.ToString)
         Dim s As SphereFormula = Nothing
         Console.WriteLine("Time" & vbTab & vbTab & vbTab & "Dim" & vbTab & "Prime" & vbTab & "Formula")
+        Dim lastUpdate As New TimeSpan(0)
         For i = 0 To dimensions
             Try
                 track.Start()
                 s = SphereFormula.ForDimension(i)
                 track.Stop()
+                If lastUpdate + New TimeSpan(0, 0, 3) <= track.Elapsed AndAlso i < dimensions Then
+                    Console.WriteLine(track.Elapsed.ToString("g") & vbTab & vbTab & i & vbTab & fraction.maxPrime & vbTab & s.ToString)
+                    lastUpdate = track.Elapsed
+                End If
             Catch ex As Exception
                 track.Stop()
                 Console.WriteLine("Unable to calculate beyond " & s.Dimensions & " dimensions due to " & ex.Message)
