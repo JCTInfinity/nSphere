@@ -15,7 +15,7 @@
     End Property
     Public ReadOnly Property Value As Double
         Get
-            Return _num / _den
+            Return CDbl(_num) / CDbl(_den)
         End Get
     End Property
     ' If this weren't using only positive numbers, I'd include a sign boolean

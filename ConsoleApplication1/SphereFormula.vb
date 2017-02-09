@@ -1,8 +1,8 @@
 ﻿Public Class SphereFormula
-    Private Shared sCache As New List(Of SphereFormula)
+    Private Shared sCache As New SphereFormula(0)
     Public Property Dimensions As UInt16
-    Public Property Pis As Integer = 0
-    Public Property Rs As Integer
+    Public Property Pis As UInt16 = 0
+    Public Property Rs As UInt16
     Public Property Frac As fraction = 1
     Public Overrides Function ToString() As String
         Dim factors As New List(Of String)
@@ -19,25 +19,19 @@
         Dimensions = d
         Rs = d
         If d > 0 Then
-            With sCache(d - 1)
-                Frac = .Frac
-                Pis = .Pis
-            End With
-            If d Mod 2 = 0 Then
-                Pis += 1
-            Else
-                Frac *= 2
-            End If
+            Frac = sCache.Frac
+            Pis = d \ 2
+            If d Mod 2 <> 0 Then Frac *= 2
             f(d)
         End If
     End Sub
     Public Shared Function ForDimension(ByVal dimensions As UInt16) As SphereFormula
-        If sCache.Count - 1 < dimensions Then
-            For i As UInt16 = sCache.Count To dimensions
-                sCache.Add(New SphereFormula(i))
+        If sCache.Dimensions < dimensions Then
+            For i As UInt16 = sCache.Dimensions + 1 To dimensions
+                sCache = New SphereFormula(i)
             Next
         End If
-        Return sCache(dimensions)
+        Return sCache
     End Function
     Public Function nVolume(ByVal r As Double) As Double
         Return Frac.Value * Math.PI ^ Pis * r ^ Rs

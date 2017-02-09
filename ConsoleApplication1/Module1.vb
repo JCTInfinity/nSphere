@@ -15,12 +15,12 @@ Module Module1
         Dim s As SphereFormula = Nothing
         Console.WriteLine("Time" & vbTab & vbTab & vbTab & "Dim" & vbTab & "Prime" & vbTab & "Formula")
         Dim lastUpdate As New TimeSpan(0)
-        For i = 0 To dimensions
+        For i = 1 To dimensions
             Try
                 track.Start()
                 s = SphereFormula.ForDimension(i)
                 track.Stop()
-                If lastUpdate + New TimeSpan(0, 0, 3) <= track.Elapsed AndAlso i < dimensions Then
+                If lastUpdate + New TimeSpan(0, 0, 6) <= track.Elapsed AndAlso i < dimensions Then
                     Console.WriteLine(track.Elapsed.ToString("g") & vbTab & vbTab & i & vbTab & fraction.maxPrime & vbTab & s.ToString)
                     lastUpdate = track.Elapsed
                 End If
