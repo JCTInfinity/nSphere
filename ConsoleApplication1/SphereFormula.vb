@@ -4,9 +4,9 @@
     Public Property Pis As UInt16 = 0
     Public Property Rs As UInt16
     Public Property Frac As fraction = 1
-    Public Overrides Function ToString() As String
+    Public Overloads Function ToString(Optional ByVal FullFraction As Boolean = False) As String
         Dim factors As New List(Of String)
-        If Frac <> 1 Then factors.Add(Frac.SimplestForm.ToString)
+        If Frac <> 1 Then factors.Add(Frac.SimplestForm.ToString(FullFraction))
         If Pis > 0 Then factors.Add(powerString("π", Pis))
         factors.Add(powerString("r", Rs))
         Return String.Join(" * ", factors)

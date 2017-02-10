@@ -42,13 +42,13 @@ function doThings() as boolean
         Console.WriteLine("A unit (r=1) " & s.Dimensions & "-sphere has a " & s.Dimensions & "-volume of " & s.nVolume(1) & " (e^" & s.nVolumeExp(1) & ")")
         Console.WriteLine()
         Console.WriteLine("If you would like to calculate the " & s.Dimensions & "-volume for a different value of r, enter a floating-point value to use.")
-        Console.WriteLine("To exit, type Exit. To start over, type New")
+        Console.WriteLine("To exit, type Exit. To start over, type New. To display the full fractional form, type Fraction.")
         Do
             input = Console.ReadLine
             Dim r As Double
             If Double.TryParse(input, r) Then
                 Console.WriteLine("With r=" & r & " the " & s.Dimensions & "-volume = " & s.nVolume(r) & " (e^" & s.nVolumeExp(r) & ")")
-                Console.WriteLine("Calculate with a nother value, Exit, or New?")
+                Console.WriteLine("Calculate with another value, Exit, or New?")
             Else
                 Select Case input.ToLower.Trim
                     Case ""
@@ -56,8 +56,11 @@ function doThings() as boolean
                         Return False
                     Case "new"
                         Return True
+                    Case "fraction"
+                        Console.WriteLine(s.ToString(True))
+                    Case Else
+                        Console.WriteLine("Unable to parse that value. Will now exit.")
                 End Select
-                Console.WriteLine("Unable to parse that value. Will now exit.")
             End If
         Loop
     End Function

@@ -25,35 +25,33 @@
             If _simplestForm Is Nothing Then
                 If Denominator = 1 OrElse Numerator = 1 Then
                     _simplestForm = Me
+                ElseIf Numerator = Denominator Then : _simplestForm = 1
                 Else
-                    Dim n As BigInteger = Numerator, d As BigInteger = Denominator
-                    Dim NumIsMin As Boolean = n <= d
-                    If If(NumIsMin, d, n) Mod If(NumIsMin, n, d) = 0 Then
-                        If NumIsMin Then
-                            d /= n
-                            n = 1
-                        Else
-                            n /= d
-                            d = 1
-                        End If
+                    Dim NumIsMin As Boolean = Numerator <= Denominator
+                    Dim smaller As BigInteger = If(NumIsMin, Numerator, Denominator), bigger As BigInteger = If(NumIsMin, Denominator, Numerator)
+                    If bigger Mod smaller = 0 Then
+                        bigger /= smaller
+                        smaller = 1
                     Else
-                        Dim k As Integer = 0
-                        Do
-                            If n Mod pCache(k) = 0 AndAlso d Mod pCache(k) = 0 Then
-                                n /= pCache(k)
-                                d /= pCache(k)
-                                If pCache(k) > maxPrime Then maxPrime = pCache(k)
-                                If If(NumIsMin, n, d) = 1 Then Exit Do
-                            Else
-                                k += 1
-                                If k = pCache.Count OrElse pCache(k) > If(NumIsMin, n, d) / 2 Then Exit Do
+                        Dim k As Integer = 0, check As BigInteger = smaller
+                        While check > 1
+                            If smaller Mod pCache(k) = 0 Then
+                                check /= pCache(k)
+                                If bigger Mod pCache(k) = 0 Then
+                                    smaller /= pCache(k)
+                                    bigger /= pCache(k)
+                                    If pCache(k) > maxPrime Then maxPrime = pCache(k)
+                                    Continue While
+                                End If
                             End If
-                        Loop
+                            k += 1
+                            If k = pCache.Count OrElse pCache(k) > check / 2 Then Exit While
+                        End While
                     End If
-                    If d = Denominator Then
+                    If If(NumIsMin, bigger, smaller) = Denominator Then
                         _simplestForm = Me
                     Else
-                        _simplestForm = New fraction(n, d)
+                        _simplestForm = If(NumIsMin, New fraction(smaller, bigger), New fraction(bigger, smaller))
                     End If
                 End If
             End If
@@ -64,8 +62,8 @@
         _num = n
         _den = d
     End Sub
-    Public Overrides Function ToString() As String
-        If _den > UInteger.MaxValue Then Return "e^" & BigInteger.Log(_num) - BigInteger.Log(_den)
+    Public Overloads Function ToString(Optional ByVal FullFraction As Boolean = False) As String
+        If Not FullFraction AndAlso _den > UInteger.MaxValue Then Return "e^" & BigInteger.Log(_num) - BigInteger.Log(_den)
         Return If(_den = 1, "", "(") & _num.ToString("n0") & If(_den = 1, "", "/" & _den.ToString("n0") & ")")
     End Function
     Public Overloads Shared Operator *(ByVal left As fraction, ByVal right As fraction)
