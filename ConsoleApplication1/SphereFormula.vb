@@ -46,7 +46,7 @@
     Private Shared fCache As New Dictionary(Of Integer, fraction)
     Private Sub f(ByVal n As Integer)
         For i As Integer = n To 2 Step -2
-            If Not fCache.ContainsKey(i) Then fCache.Add(i, (New fraction(i - 1, i))) '.SimplestForm)
+            If Not fCache.ContainsKey(i) Then fCache.Add(i, (New fraction(i - 1, i)).SimplestForm)
             Frac *= fCache(i)
         Next
     End Sub

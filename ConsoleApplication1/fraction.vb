@@ -72,7 +72,7 @@
         Return ToString(False)
     End Function
     Public Overloads Shared Operator *(ByVal left As fraction, ByVal right As fraction)
-        Return (New fraction(left.Numerator * right.Numerator, left.Denominator * right.Denominator)) '.SimplestForm
+        Return (New fraction(left.Numerator * right.Numerator, left.Denominator * right.Denominator)).SimplestForm
     End Operator
     Public Overloads Shared Operator =(ByVal left As fraction, ByVal right As fraction) As Boolean
         Return left.SimplestForm.Numerator = right.SimplestForm.Numerator AndAlso left.SimplestForm.Denominator = right.SimplestForm.Denominator
