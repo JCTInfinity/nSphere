@@ -4,12 +4,15 @@
     Public Property Pis As UInt16 = 0
     Public Property Rs As UInt16
     Public Property Frac As fraction = 1
-    Public Overloads Function ToString(Optional ByVal FullFraction As Boolean = False) As String
+    Public Overloads Function ToString(ByVal FullFraction As Boolean) As String
         Dim factors As New List(Of String)
         If Frac <> 1 Then factors.Add(Frac.SimplestForm.ToString(FullFraction))
         If Pis > 0 Then factors.Add(powerString("π", Pis))
         factors.Add(powerString("r", Rs))
         Return String.Join(" * ", factors)
+    End Function
+    Public Overrides Function ToString() As String
+        Return ToString(False)
     End Function
     Private Function powerString(ByVal value As String, ByVal power As Integer) As String
         If power = 1 Then Return value
@@ -43,7 +46,7 @@
     Private Shared fCache As New Dictionary(Of Integer, fraction)
     Private Sub f(ByVal n As Integer)
         For i As Integer = n To 2 Step -2
-            If Not fCache.ContainsKey(i) Then fCache.Add(i, (New fraction(i - 1, i)).SimplestForm)
+            If Not fCache.ContainsKey(i) Then fCache.Add(i, (New fraction(i - 1, i))) '.SimplestForm)
             Frac *= fCache(i)
         Next
     End Sub

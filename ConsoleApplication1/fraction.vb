@@ -25,30 +25,35 @@
             If _simplestForm Is Nothing Then
                 If Denominator = 1 OrElse Numerator = 1 Then
                     _simplestForm = Me
-                ElseIf Numerator = Denominator Then : _simplestForm = 1
                 Else
-                    Dim NumIsMin As Boolean = Numerator <= Denominator
-                    Dim smaller As BigInteger = If(NumIsMin, Numerator, Denominator), bigger As BigInteger = If(NumIsMin, Denominator, Numerator)
-                    If bigger Mod smaller = 0 Then
-                        bigger /= smaller
-                        smaller = 1
+                    Dim n As BigInteger = Numerator, d As BigInteger = Denominator
+                    Dim NumIsMin As Boolean = n <= d
+                    If If(NumIsMin, d, n) Mod If(NumIsMin, n, d) = 0 Then
+                        If NumIsMin Then
+                            d /= n
+                            n = 1
+                        Else
+                            n /= d
+                            d = 1
+                        End If
                     Else
-                        Dim k As Integer = 0, check As BigInteger = smaller
-                        While check > 1
-                            While check Mod pCache(k) = 0 : check /= pCache(k) : End While
-                            While smaller Mod pCache(k) = 0 AndAlso bigger Mod pCache(k) = 0
-                                smaller /= pCache(k)
-                                bigger /= pCache(k)
+                        Dim k As Integer = 0
+                        Do
+                            If n Mod pCache(k) = 0 AndAlso d Mod pCache(k) = 0 Then
+                                n /= pCache(k)
+                                d /= pCache(k)
                                 If pCache(k) > maxPrime Then maxPrime = pCache(k)
-                            End While
-                            k += 1
-                            If k = pCache.Count OrElse pCache(k) > check / 2 Then Exit While
-                        End While
+                                If If(NumIsMin, n, d) = 1 Then Exit Do
+                            Else
+                                k += 1
+                                If k = pCache.Count OrElse pCache(k) > If(NumIsMin, n, d) / 2 Then Exit Do
+                            End If
+                        Loop
                     End If
-                    If If(NumIsMin, bigger, smaller) = Denominator Then
+                    If d = Denominator Then
                         _simplestForm = Me
                     Else
-                        _simplestForm = If(NumIsMin, New fraction(smaller, bigger), New fraction(bigger, smaller))
+                        _simplestForm = New fraction(n, d)
                     End If
                 End If
             End If
@@ -59,17 +64,28 @@
         _num = n
         _den = d
     End Sub
-    Public Overloads Function ToString(Optional ByVal FullFraction As Boolean = False) As String
+    Public Overloads Function ToString(ByVal FullFraction As Boolean) As String
         If Not FullFraction AndAlso _den > UInteger.MaxValue Then Return "e^" & BigInteger.Log(_num) - BigInteger.Log(_den)
         Return If(_den = 1, "", "(") & _num.ToString("n0") & If(_den = 1, "", "/" & _den.ToString("n0") & ")")
     End Function
+    Public Overrides Function ToString() As String
+        Return ToString(False)
+    End Function
     Public Overloads Shared Operator *(ByVal left As fraction, ByVal right As fraction)
-        Return (New fraction(left.Numerator * right.Numerator, left.Denominator * right.Denominator)).SimplestForm
+        Return (New fraction(left.Numerator * right.Numerator, left.Denominator * right.Denominator)) '.SimplestForm
     End Operator
     Public Overloads Shared Operator =(ByVal left As fraction, ByVal right As fraction) As Boolean
         Return left.SimplestForm.Numerator = right.SimplestForm.Numerator AndAlso left.SimplestForm.Denominator = right.SimplestForm.Denominator
     End Operator
     Public Overloads Shared Operator <>(ByVal left As fraction, ByVal right As fraction) As Boolean
+        Return Not (left = right)
+    End Operator
+    Public Overloads Shared Operator =(ByVal left As fraction, ByVal right As Integer) As Boolean
+        If left.Denominator > left.Numerator Then Return False
+        If left.Numerator Mod left.Denominator <> 0 Then Return False
+        Return left.SimplestForm.Numerator = right
+    End Operator
+    Public Overloads Shared Operator <>(ByVal left As fraction, ByVal right As Integer) As Boolean
         Return Not (left = right)
     End Operator
     Public Shared Widening Operator CType(ByVal value As Integer) As fraction
