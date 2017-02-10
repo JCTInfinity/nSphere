@@ -35,15 +35,12 @@
                     Else
                         Dim k As Integer = 0, check As BigInteger = smaller
                         While check > 1
-                            If smaller Mod pCache(k) = 0 Then
-                                check /= pCache(k)
-                                If bigger Mod pCache(k) = 0 Then
-                                    smaller /= pCache(k)
-                                    bigger /= pCache(k)
-                                    If pCache(k) > maxPrime Then maxPrime = pCache(k)
-                                    Continue While
-                                End If
-                            End If
+                            While check Mod pCache(k) = 0 : check /= pCache(k) : End While
+                            While smaller Mod pCache(k) = 0 AndAlso bigger Mod pCache(k) = 0
+                                smaller /= pCache(k)
+                                bigger /= pCache(k)
+                                If pCache(k) > maxPrime Then maxPrime = pCache(k)
+                            End While
                             k += 1
                             If k = pCache.Count OrElse pCache(k) > check / 2 Then Exit While
                         End While
