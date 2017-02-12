@@ -12,8 +12,8 @@ function doThings() as boolean
             Return True
         End If
         Dim track As New Stopwatch
-        If pCache Is Nothing OrElse pCache.Count < dimensions * 2 Then
-            pCache = SieveOfAtkin.Generate(dimensions * 2, track)
+        If pCache Is Nothing OrElse pCache.Last < dimensions Then
+            pCache = SieveOfAtkin.Generate(dimensions, track)
             Console.WriteLine(pCache.Count & " primes generated in " & track.Elapsed.ToString("g") & " ending with " & pCache.Last.ToString)
         End If
         Dim s As SphereFormula = Nothing
@@ -23,6 +23,7 @@ function doThings() as boolean
         If startDim > dimensions Then startDim = 1
         For i = startDim To dimensions
             Try
+                fraction.maxPrime = 0
                 track.Start()
                 s = SphereFormula.ForDimension(i)
                 track.Stop()

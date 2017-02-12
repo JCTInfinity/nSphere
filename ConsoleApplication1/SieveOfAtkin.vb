@@ -1,70 +1,55 @@
 ﻿Public Class SieveOfAtkin
+    ' Sieve Of Atkin, based on the wikipedia article: https://en.wikipedia.org/wiki/Sieve_of_Atkin
+    ' And further developed based on Axel Magnuson's firstpass function found in the code he posted
+    '   here: http://mathoverflow.net/questions/13116/c-sieve-of-atkin-overlooks-a-few-prime-numbers
+
     Private _limit As UInteger
     Private is_prime As New Dictionary(Of UInteger, Boolean)
     Private Shared s As UInteger() = {1, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 49, 53, 59}
-    Private Sub New(ByVal limit As BigInteger)
+    Private Sub New(ByVal limit As UInteger)
         _limit = limit
-        For i As UInteger = 0 To _limit Step 60
-            For k As Byte = 0 To 15
-                is_prime.Add(i + s(k), False)
+        For i As UInteger = 1 To _limit
+            If s.Contains(i Mod 60) Then is_prime(i) = False
+        Next
+    End Sub
+    Private Sub switch(ByVal n As UInteger)
+        If is_prime.ContainsKey(n) Then is_prime(n) = Not is_prime(n)
+    End Sub
+    Private Shared Function sqrt(ByVal value As Double) As UInteger
+        Return Math.Sqrt(Math.Abs(value))
+    End Function
+    Private Sub firstpass()
+        Dim xroof As UInteger, x As UInteger, yroof As UInteger, y As UInteger, n As UInteger, nmod As UInteger
+        ' n = 4x^2 + y^2
+        xroof = sqrt((_limit - 1) / 4)
+        For x = 1 To xroof
+            yroof = sqrt(_limit - 4 * x * x)
+            For y = 1 To yroof
+                n = 4 * x * x + y * y
+                nmod = n Mod 12
+                If {1, 5}.Contains(nmod) Then switch(n)
             Next
         Next
-    End Sub
-    Private Sub Step3_1()
-        Dim x As UInteger = 1, xn As UInteger = 4, y As UInteger, yn As UInteger, n As UInteger
-        Dim solutions As New List(Of UInteger)
-        While xn < _limit
-            y = 1 : yn = 1
-            n = xn + yn
-            While n < _limit
-                If is_prime.ContainsKey(n) AndAlso {1, 13, 17, 29, 37, 41, 49, 53}.Contains(n Mod 60) AndAlso Not solutions.Contains(n) Then solutions.Add(n)
-                y += 2
-                yn = y * y
-                n = xn + yn
-            End While
-            x += 2
-            xn = 4 * x * x
-        End While
-        For Each n In solutions
-            is_prime(n) = True 'Not sieveList(n), but all values are already false at this point
+        ' n = 3x^2 + y^2
+        xroof = sqrt((_limit - 1) / 3)
+        For x = 1 To xroof
+            yroof = sqrt(_limit - 3 * x * x)
+            For y = 1 To yroof
+                n = 3 * x * x + y * y
+                nmod = n Mod 12
+                If nmod = 7 Then switch(n)
+            Next
         Next
-    End Sub
-    Private Sub Step3_2()
-        Dim x As UInteger = 1, xn As UInteger = 3, y As UInteger, yn As UInteger, n As UInteger
-        Dim solutions As New List(Of UInteger)
-        While xn < _limit
-            y = 2 : yn = 4
-            n = xn + yn
-            While n < _limit
-                If is_prime.ContainsKey(n) AndAlso {7, 19, 31, 43}.Contains(n Mod 60) AndAlso Not solutions.Contains(n) Then solutions.Add(n)
-                y += 2
-                yn = y * y
-                n = xn + yn
-            End While
-            x += 2
-            xn = 3 * x * x
-        End While
-        For Each n In solutions
-            is_prime(n) = Not is_prime(n)
-        Next
-    End Sub
-    Private Sub Step3_3()
-        Dim x As UInteger = 2, xn As UInteger = 4, y As UInteger, yn As UInteger, n As UInteger
-        Dim solutions As New List(Of UInteger)
-        While xn < _limit
-            y = x - 1 : yn = y * y
-            n = xn - yn
-            While n < _limit
-                If is_prime.ContainsKey(n) AndAlso {11, 23, 47, 59}.Contains(n Mod 60) AndAlso Not solutions.Contains(n) Then solutions.Add(n)
-                y += 2
-                yn = y * y
-                n = xn + yn
-            End While
-            x += 2
-            xn = 3 * x * x
-        End While
-        For Each n In solutions
-            is_prime(n) = Not is_prime(n)
+        ' n = 3x^2 - y^2 (for x > y)
+        xroof = sqrt((_limit + 1) / 3)
+        For x = 1 To xroof
+            yroof = sqrt(3 * x * x - 1)
+            If yroof >= x Then yroof = x - 1
+            For y = 1 To yroof
+                n = 3 * x * x - y * y
+                nmod = n Mod 12
+                If nmod = 11 Then switch(n)
+            Next
         Next
     End Sub
     Private Sub sieve()
@@ -91,14 +76,11 @@
     Public Shared Function Generate(ByVal limit As UInteger, ByVal timer As Stopwatch) As List(Of UInteger)
         timer.Start()
         With New SieveOfAtkin(limit)
-            .Step3_1()
-            .Step3_2()
-            .Step3_3()
+            .firstpass()
             .sieve()
-            Generate = New List(Of UInteger) From {2, 3, 5}
-            Generate.AddRange(.is_prime.Where(Function(p) p.Value AndAlso p.Key >= 7).Select(Function(p) p.Key))
+            Generate = New List(Of UInteger) From {2, 3, 5, 7}
+            Generate.AddRange(.is_prime.Where(Function(p) p.Value AndAlso p.Key > 7).Select(Function(p) p.Key))
         End With
         timer.Stop()
-
     End Function
 End Class
