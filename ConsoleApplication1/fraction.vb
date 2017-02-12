@@ -86,7 +86,7 @@ Public Class fraction
         If left.Denominator > left.Numerator Then Return False
         Dim iForm As BigInteger = left.Numerator Mod left.Denominator
         If iForm <> 0 Then Return False
-        Return iForm = right
+        Return left.Numerator / left.Denominator = right
     End Operator
     Public Overloads Shared Operator <>(ByVal left As fraction, ByVal right As UInteger) As Boolean
         Return Not (left = right)
